@@ -1,0 +1,14 @@
+<suite name="Parallel" verbose="1">
+    <parameter name="platform" value="IOS"/>
+    <test name="Appium Project">
+        <classes>
+            <class name="testRunners.TestRunner"/>
+        </classes>
+    </test>
+
+    <test name="Appium Failed Tests Rerun">
+        <classes>
+            <class name="testRunners.FailedTestRunner"/>
+        </classes>
+    </test>
+</suite>
