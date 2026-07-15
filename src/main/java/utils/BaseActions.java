@@ -1,18 +1,18 @@
 package utils;
 
-import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.nativekey.AndroidKey;
-import io.appium.java_client.android.nativekey.KeyEvent;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.*;
-import java.util.NoSuchElementException;
+import java.util.List;
+import java.util.Optional;
 
 public class BaseActions {
     private final AppiumDriver driver;
@@ -25,69 +25,118 @@ public class BaseActions {
 
     // -------------------- WAIT METHODS --------------------
 
+    /**
+     * Waits for the element to be present in the DOM / native element tree.
+     * The element does not need to be visible.
+     */
     public WebElement waitForPresence(By locator) {
         validateLocator(locator);
-        return wait.until(ExpectedConditions.presenceOfElementLocated(locator)
+
+        return wait.until(
+                ExpectedConditions.presenceOfElementLocated(locator)
         );
     }
 
-    public WebElement waitForPresence(WebElement element) {
-        validateLocator(element);
-        return wait.until(ExpectedConditions.presenceOfElementLocated((By) element)
-        );
-    }
-
+    /**
+     * Waits for the element found by the locator to become visible.
+     */
     public WebElement waitForVisibility(By locator) {
         validateLocator(locator);
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator)
+
+        return wait.until(
+                ExpectedConditions.visibilityOfElementLocated(locator)
         );
     }
 
-    public WebElement waitForVisibility(WebElement element) {
+    /**
+     * Waits for the given WebElement to become visible.
+     */
+    public WebElement waitForVisibility(
+            WebElement element
+    ) {
         validateElement(element);
-        return wait.until(ExpectedConditions.visibilityOf(element)
+
+        return wait.until(
+                ExpectedConditions.visibilityOf(element)
         );
     }
 
+    /**
+     * Waits for the element found by the locator to become clickable.
+     */
     public WebElement waitForClickable(By locator) {
         validateLocator(locator);
-        return wait.until(ExpectedConditions.elementToBeClickable(locator)
+
+        return wait.until(
+                ExpectedConditions.elementToBeClickable(locator)
         );
     }
 
-    public WebElement waitForClickable(WebElement element) {
+    /**
+     * Waits for the given WebElement to become clickable.
+     */
+    public WebElement waitForClickable(
+            WebElement element
+    ) {
         validateElement(element);
-        return wait.until(ExpectedConditions.elementToBeClickable(element)
+
+        return wait.until(
+                ExpectedConditions.elementToBeClickable(element)
         );
     }
 
+    /**
+     * Waits for the element to become invisible or be removed from the element tree.
+     */
     public boolean waitForInvisibility(By locator) {
         validateLocator(locator);
-        return wait.until(ExpectedConditions.invisibilityOfElementLocated(locator)
+
+        return wait.until(
+                ExpectedConditions.invisibilityOfElementLocated(locator)
         );
     }
 
-    public boolean waitForText(By locator, String expectedText) {
+    /**
+     * Waits for the element text to contain the expected text.
+     */
+    public boolean waitForText(
+            By locator,
+            String expectedText
+    ) {
         validateLocator(locator);
-        if (expectedText == null) {
-            throw new IllegalArgumentException("Expected text cannot be null.");
-        }
+        validateText(expectedText);
 
-        return wait.until(ExpectedConditions.textToBePresentInElementLocated(locator,expectedText));
+        return wait.until(
+                ExpectedConditions.textToBePresentInElementLocated(
+                        locator,
+                        expectedText
+                )
+        );
     }
 
-    public boolean waitForAttribute(By locator, String attributeName, String expectedValue) {
+    /**
+     * Waits for the element attribute value to match the expected value.
+     */
+    public boolean waitForAttribute(
+            By locator,
+            String attributeName,
+            String expectedValue
+    ) {
         validateLocator(locator);
-        if (attributeName == null || attributeName.isBlank()) {
-            throw new IllegalArgumentException("Attribute name cannot be null or blank.");
-        }
+        validateAttributeName(attributeName);
 
         if (expectedValue == null) {
-            throw new IllegalArgumentException("Expected attribute value cannot be null."
+            throw new IllegalArgumentException(
+                    "Expected attribute value cannot be null."
             );
         }
 
-        return wait.until(ExpectedConditions.attributeToBe(locator,attributeName,expectedValue)
+        return wait.until(
+                ExpectedConditions.attributeToBe(
+                        locator,
+                        attributeName,
+                        expectedValue
+                )
         );
     }
 
@@ -104,42 +153,64 @@ public class BaseActions {
     // -------------------- SEND KEYS --------------------
 
     /**
-     * Sends text without clearing the current value.
+     * Sends text without clearing the existing value in the input.
      */
-    public void send(By locator, String text) {
+    public void send(
+            By locator,
+            String text
+    ) {
         validateText(text);
-        waitForVisibility(locator).sendKeys(text);
+
+        waitForVisibility(locator)
+                .sendKeys(text);
     }
 
     /**
-     * Sends text without clearing the current value.
+     * Sends text without clearing the existing value in the input.
      */
-    public void send(WebElement element, String text) {
+    public void send(
+            WebElement element,
+            String text
+    ) {
         validateText(text);
-        waitForVisibility(element).sendKeys(text);
+
+        waitForVisibility(element)
+                .sendKeys(text);
     }
 
     /**
-     * It clears the field and then enters the text.
+     * Clears the input field and then sends text.
      */
-    public void clearAndSend(By locator, String text) {
+    public void clearAndSend(
+            By locator,
+            String text
+    ) {
         validateText(text);
-        WebElement element = waitForVisibility(locator);
+
+        WebElement element =
+                waitForVisibility(locator);
+
         element.clear();
         element.sendKeys(text);
     }
 
     /**
-     * It clears the field and then enters the text.
+     * Clears the input field and then sends text.
      */
-    public void clearAndSend(WebElement element, String text) {
+    public void clearAndSend(
+            WebElement element,
+            String text
+    ) {
         validateText(text);
-        WebElement visibleElement = waitForVisibility(element);
+
+        WebElement visibleElement =
+                waitForVisibility(element);
+
         visibleElement.clear();
         visibleElement.sendKeys(text);
     }
 
-    // -------------------- CLEAR ---- ----------------
+    // -------------------- CLEAR --------------------
 
     public void clear(By locator) {
         waitForVisibility(locator).clear();
@@ -151,82 +222,135 @@ public class BaseActions {
 
     // -------------------- TEXT / ATTRIBUTE --------------------
 
-    public String getText(By locator) {return waitForVisibility(locator).getText();
+    public String getText(By locator) {
+        return waitForVisibility(locator)
+                .getText();
     }
 
-    public String getText(WebElement element) {return waitForVisibility(element).getText();
+    public String getText(WebElement element) {
+        return waitForVisibility(element)
+                .getText();
     }
 
-    public String getAttribute(By locator, String attributeName) {
+    public String getAttribute(
+            By locator,
+            String attributeName
+    ) {
         validateAttributeName(attributeName);
-        return waitForVisibility(locator).getAttribute(attributeName);
+
+        return waitForVisibility(locator)
+                .getAttribute(attributeName);
     }
 
-    public String getAttribute(WebElement element, String attributeName) {
+    public String getAttribute(
+            WebElement element,
+            String attributeName
+    ) {
         validateAttributeName(attributeName);
-        return waitForVisibility(element).getAttribute(attributeName);
+
+        return waitForVisibility(element)
+                .getAttribute(attributeName);
     }
 
     // -------------------- ELEMENT STATE --------------------
 
     public boolean isDisplayed(By locator) {
         validateLocator(locator);
+
         try {
-            return waitForVisibility(locator).isDisplayed();
-        } catch (TimeoutException | NoSuchElementException | StaleElementReferenceException exception
+            return waitForVisibility(locator)
+                    .isDisplayed();
+
+        } catch (
+                TimeoutException
+                | NoSuchElementException
+                | StaleElementReferenceException exception
         ) {
             return false;
         }
     }
 
-    public boolean isDisplayed(WebElement element
+    public boolean isDisplayed(
+            WebElement element
     ) {
         validateElement(element);
+
         try {
-            return waitForVisibility(element).isDisplayed();
+            return waitForVisibility(element)
+                    .isDisplayed();
+
         } catch (
-                TimeoutException | NoSuchElementException | StaleElementReferenceException exception
+                TimeoutException
+                | NoSuchElementException
+                | StaleElementReferenceException exception
         ) {
             return false;
         }
     }
 
     public boolean isEnabled(By locator) {
+        validateLocator(locator);
+
         try {
-            return waitForPresence(locator).isEnabled();
+            return waitForPresence(locator)
+                    .isEnabled();
+
         } catch (
-                TimeoutException | NoSuchElementException | StaleElementReferenceException exception
+                TimeoutException
+                | NoSuchElementException
+                | StaleElementReferenceException exception
         ) {
             return false;
         }
     }
 
-    public boolean isEnabled(WebElement element) {
+    public boolean isEnabled(
+            WebElement element
+    ) {
+        validateElement(element);
+
         try {
-            return waitForPresence(element).isEnabled();
+            return waitForVisibility(element)
+                    .isEnabled();
+
         } catch (
-                TimeoutException | NoSuchElementException | StaleElementReferenceException exception
+                TimeoutException
+                | NoSuchElementException
+                | StaleElementReferenceException exception
         ) {
             return false;
         }
     }
 
     public boolean isSelected(By locator) {
+        validateLocator(locator);
+
         try {
-            return waitForPresence(locator).isSelected();
+            return waitForPresence(locator)
+                    .isSelected();
 
         } catch (
-                TimeoutException | NoSuchElementException | StaleElementReferenceException exception
+                TimeoutException
+                | NoSuchElementException
+                | StaleElementReferenceException exception
         ) {
             return false;
         }
     }
 
-    public boolean isSelected(WebElement element) {
-        try {
-            return waitForPresence(element).isSelected();
+    public boolean isSelected(
+            WebElement element
+    ) {
+        validateElement(element);
 
-        } catch (TimeoutException | NoSuchElementException | StaleElementReferenceException exception
+        try {
+            return waitForVisibility(element)
+                    .isSelected();
+
+        } catch (
+                TimeoutException
+                | NoSuchElementException
+                | StaleElementReferenceException exception
         ) {
             return false;
         }
@@ -235,11 +359,10 @@ public class BaseActions {
     // -------------------- INTERNAL HELPERS --------------------
 
     /**
-     * Searches for the element currently visible on the screen without using `Wait`.
+     * Searches for a visible element on the current screen without using explicit wait.
      *
-     * Used by AndroidActions and IOSActions to avoid having to wait 10 seconds each time in scroll loops.
+     * This avoids waiting 10 seconds on each iteration in scroll loops.
      */
-
     protected Optional<WebElement> findDisplayedElement(
             By locator
     ) {
@@ -253,16 +376,20 @@ public class BaseActions {
                 if (element.isDisplayed()) {
                     return Optional.of(element);
                 }
+
             } catch (
                     StaleElementReferenceException ignored
             ) {
-                // Scroll sonrasında element yenilenmiş olabilir.
+                // The element tree may have refreshed after scrolling.
             }
         }
 
         return Optional.empty();
     }
 
+    /**
+     * Returns the element ID used for Appium gesture operations.
+     */
     protected String getElementId(
             WebElement element
     ) {
@@ -286,14 +413,6 @@ public class BaseActions {
         }
     }
 
-    protected void validateLocator(WebElement element) {
-        if (element == null) {
-            throw new IllegalArgumentException(
-                    "Locator cannot be null."
-            );
-        }
-    }
-
     protected void validateElement(
             WebElement element
     ) {
@@ -304,7 +423,7 @@ public class BaseActions {
         }
     }
 
-    private void validateText(String text) {
+    protected void validateText(String text) {
         if (text == null) {
             throw new IllegalArgumentException(
                     "Text cannot be null."
@@ -312,16 +431,51 @@ public class BaseActions {
         }
     }
 
-    private void validateAttributeName(
+    protected void validateAttributeName(
             String attributeName
     ) {
-        if (attributeName == null ||
-                attributeName.isBlank()) {
+        if (attributeName == null
+                || attributeName.isBlank()) {
 
             throw new IllegalArgumentException(
                     "Attribute name cannot be null or blank."
             );
         }
     }
-}
 
+    // -------------------- ENUMS --------------------
+
+    public enum SwipeDirection {
+
+        UP("up"),
+        DOWN("down"),
+        LEFT("left"),
+        RIGHT("right");
+
+        private final String value;
+
+        SwipeDirection(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public enum PickerDirection {
+
+        NEXT("next"),
+        PREVIOUS("previous");
+
+        private final String value;
+
+        PickerDirection(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+}
