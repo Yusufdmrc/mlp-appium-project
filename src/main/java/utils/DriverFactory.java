@@ -80,7 +80,7 @@ public class DriverFactory {
             throw new RuntimeException("Invalid Appium server URL", e);
         }
 
-        int impWait = Integer.parseInt(properties.getProperty("implicityWait"));
+        int impWait = Integer.parseInt(properties.getProperty("implicitWait"));
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(impWait));
 
         return getDriver();
