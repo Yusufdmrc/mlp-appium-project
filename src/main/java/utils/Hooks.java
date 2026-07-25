@@ -15,13 +15,25 @@ public class Hooks {
     private AppiumDriver driver;
     private Properties properties;
 
-    @Before
-    public void setUp() {
+
+    private void initializeDriver(){
         String platform = Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter("platform");
         properties = ConfigReader.initialize_Properties();
         driver = DriverFactory.initialize_Driver(platform);
         System.out.println("Test execution started on: " + platform);
     }
+
+    @Before(order =1,value = "not @LoginRequired")
+    public void setUp() {
+        initializeDriver();
+    }
+
+    public  void setUpWithLogin() {
+        initializeDriver();
+        LoginPage loginPage = new LoginPage(driver);
+    }
+
+
 
     @After
     public void tearDown(Scenario scenario) {

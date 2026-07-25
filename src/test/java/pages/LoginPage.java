@@ -67,4 +67,12 @@ public class LoginPage {
     public void checkSuccessful() {
         baseActions.waitForVisibility(balance);
     }
+
+    public void login(String username,String password){
+        clickMemberLoginButton();
+        writeUsernameForUsernameField(username);
+        writePasswordForPasswordField(password);
+        clickLogin();
+        checkSuccessful();
+    }
 }
