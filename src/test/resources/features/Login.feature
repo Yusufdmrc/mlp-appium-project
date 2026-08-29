@@ -12,5 +12,5 @@ Feature: Login Check Test Cases
     Then Check Successful login
 
     Examples:
-      | username  | password  |
-      | 123456789 | Piyango1.
+      | username    | password        |
+      | correctTCID | correctPassword |

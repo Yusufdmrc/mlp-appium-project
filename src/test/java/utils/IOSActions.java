@@ -15,8 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import java.time.Duration;
-
 public class IOSActions extends BaseActions{
 
     private static final int DEFAULT_MAX_SWIPES = 10;

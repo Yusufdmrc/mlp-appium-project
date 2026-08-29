@@ -3,6 +3,10 @@ package utils;
 public class LoginHelper {
 
     public static String getUserName(String usernameKey) {
+        if (usernameKey == null) {
+            return "";
+        }
+
         switch (usernameKey.toLowerCase()) {
             case "correcttcid":
                 return ConfigReader.get("correct.tc.id");
@@ -18,6 +22,10 @@ public class LoginHelper {
     }
 
     public static String getPassword(String passwordKey) {
+        if (passwordKey == null) {
+            return "";
+        }
+
         switch (passwordKey.toLowerCase()) {
             case "correctpassword":
                 return ConfigReader.get("correct.password");

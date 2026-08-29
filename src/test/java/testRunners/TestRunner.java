@@ -1,12 +1,10 @@
 package testRunners;
-import io.appium.java_client.AppiumDriver;
 import io.cucumber.testng.AbstractTestNGCucumberTests;
 import io.cucumber.testng.CucumberOptions;
 
 @CucumberOptions(
         features ={"src/test/resources/features"},
-        glue = {"stepDefinitions","utils"},
-        tags = "@login",
+        glue = {"stepDefinitions", "utils"},
         plugin = {
                 "summary",
                 "pretty",

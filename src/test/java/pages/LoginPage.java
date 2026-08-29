@@ -1,46 +1,46 @@
 package pages;
 
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.ios.IOSDriver;
+import io.appium.java_client.pagefactory.AndroidFindBy;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
+import io.appium.java_client.pagefactory.iOSXCUITFindBy;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import utils.AndroidActions;
 import utils.BaseActions;
-import utils.IOSActions;
 
 import java.time.Duration;
 
 public class LoginPage {
 
-    private final AppiumDriver driver;
     private final BaseActions baseActions;
-    private final IOSActions iosActions;
-    private final AndroidActions androidActions;
 
-    @FindBy(xpath = "")
+    @iOSXCUITFindBy(accessibility = "login_button")
+    @AndroidFindBy(xpath = "//android.widget.Button[@resource-id=\"tr.sisal.millipiyango.test:id/\" and @text=\"Üye Girişi\"]")
     WebElement memberLoginButton;
 
-    @FindBy(id = "")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeButton[@name='GİRİŞ YAP']")
+    @AndroidFindBy(xpath = "//android.widget.Button[@text=\"GİRİŞ YAP\"]")
     WebElement loginButton;
 
-    @FindBy(id = "")
+    @iOSXCUITFindBy(accessibility = "Enter your email, TC number or account number")
+    @AndroidFindBy(xpath = "//android.view.View[@text=\"E-posta / TC Numarası / Hesap numarası\"]")
     WebElement usernameBox;
 
-    @FindBy(id = "")
+    @iOSXCUITFindBy(accessibility = "Enter your password")
+    @AndroidFindBy(id = "password")
     WebElement passwordBox;
 
-    @FindBy(css = "")
+    @iOSXCUITFindBy(accessibility = "modal close button")
+    @AndroidFindBy(className = "android.widget.ImageButton")
+    WebElement modalCloseButton;
+
+    @iOSXCUITFindBy(accessibility = "balance_label")
+    @AndroidFindBy(xpath = "//android.widget.TextView[@resource-id=\"tr.sisal.millipiyango.test:id/\" and @text=\"612.454.889,17 ₺\"]")
     WebElement balance;
 
     public LoginPage(AppiumDriver driver) {
-        this.driver = driver;
         PageFactory.initElements(new AppiumFieldDecorator(driver, Duration.ofSeconds(10)), this);
         this.baseActions = new BaseActions(driver);
-        this.iosActions=new IOSActions((IOSDriver) driver);
-        this.androidActions=new AndroidActions((AndroidDriver) driver);
     }
 
 
@@ -65,10 +65,11 @@ public class LoginPage {
     }
 
     public void checkSuccessful() {
+        baseActions.click(modalCloseButton);
         baseActions.waitForVisibility(balance);
     }
 
-    public void login(String username,String password){
+    public void login(String username, String password) {
         clickMemberLoginButton();
         writeUsernameForUsernameField(username);
         writePasswordForPasswordField(password);
