@@ -48,4 +48,14 @@ public class LoginSteps {
     public void checkSuccessfulLogin() {
         loginPage().checkSuccessful();
     }
+
+    @Then("Check {string} message about credentials not valid")
+    public void checkMessageAboutCredentialsNotValid(String expectedMessage) {
+        loginPage().checkErrorMessage(expectedMessage);
+    }
+
+    @Then("Check unsuccessful login")
+    public void checkUnsuccessfulLogin() {
+        loginPage().checkUnsuccessfulLogin();
+    }
 }

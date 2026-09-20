@@ -6,6 +6,7 @@ import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import io.appium.java_client.pagefactory.iOSXCUITFindBy;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
+import org.testng.Assert;
 import utils.BaseActions;
 
 import java.time.Duration;
@@ -38,6 +39,14 @@ public class LoginPage {
     @AndroidFindBy(xpath = "//android.widget.TextView[@resource-id=\"tr.sisal.millipiyango.test:id/\" and @text=\"612.454.889,17 ₺\"]")
     WebElement balance;
 
+    @iOSXCUITFindBy(accessibility = "error_message")
+    @AndroidFindBy(className = "android.widget.TextView")
+    WebElement errorMessage;
+
+    @iOSXCUITFindBy(accessibility = "error_message")
+    @AndroidFindBy(className = "android.widget.TextView")
+    WebElement otherErrorMessage;
+
     public LoginPage(AppiumDriver driver) {
         PageFactory.initElements(new AppiumFieldDecorator(driver, Duration.ofSeconds(10)), this);
         this.baseActions = new BaseActions(driver);
@@ -69,6 +78,20 @@ public class LoginPage {
         baseActions.waitForVisibility(balance);
     }
 
+    public void checkUnsuccessfulLogin() {
+        baseActions.waitForVisibility(balance);
+    }
+
+    public void checkErrorMessage(String expectedMessage) {
+        String actualMessage = "";
+        if (baseActions.isDisplayed(errorMessage)) {
+            actualMessage = errorMessage.getText();
+        } else if (baseActions.isDisplayed(otherErrorMessage)) {
+            actualMessage = otherErrorMessage.getText();
+        }
+        Assert.assertEquals(actualMessage, expectedMessage);
+    }
+
     public void login(String username, String password) {
         clickMemberLoginButton();
         writeUsernameForUsernameField(username);
@@ -76,4 +99,7 @@ public class LoginPage {
         clickLogin();
         checkSuccessful();
     }
+
+
+
 }
