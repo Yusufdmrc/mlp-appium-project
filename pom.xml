@@ -12,7 +12,20 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <allure.version>2.35.3</allure.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-bom</artifactId>
+                <version>${allure.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- Selenium WebDriver -->
@@ -26,7 +39,7 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>7.5</version>
+            <version>7.8.0</version>
         </dependency>
 
         <!-- Cucumber -->
@@ -39,6 +52,18 @@
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-testng</artifactId>
             <version>7.8.0</version>
+        </dependency>
+
+        <!-- Allure reporting for Cucumber-JVM + TestNG -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-cucumber7-jvm</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-testng</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <!-- Appium Java Client -->
@@ -58,13 +83,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.36</version>
-        </dependency>
-
-        <!-- Extent Reports Adapter for Cucumber -->
-        <dependency>
-            <groupId>tech.grasshopper</groupId>
-            <artifactId>extentreports-cucumber7-adapter</artifactId>
-            <version>1.5.1</version>
         </dependency>
 
         <!-- Lombok -->
@@ -93,6 +111,43 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+
+            <!-- Generates target/site/allure-maven-plugin/index.html from target/allure-results -->
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <id>generate-allure-report-after-tests</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Prints a clickable local report path after Allure finishes. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>print-allure-report-link</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <echo>Allure report: file://${project.build.directory}/site/allure-maven-plugin/index.html</echo>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

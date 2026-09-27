@@ -9,7 +9,7 @@ import io.cucumber.testng.CucumberOptions;
                 "summary",
                 "pretty",
                 "html:Reports/CucumberReport/Reports.html",
-                "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:",
+                "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm",
                 "rerun:target/failedrerun.txt"
         }
 

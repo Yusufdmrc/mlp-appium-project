@@ -1,4 +1,7 @@
 target/
+.allure/
+allure-results/
+allure-report/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -42,4 +45,3 @@ build/
 
 /src/test/resources/config.properties
 /src/test/resources/cucumber.properties
-/src/test/resources/extent.properties

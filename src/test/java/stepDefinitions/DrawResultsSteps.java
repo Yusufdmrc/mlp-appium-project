@@ -4,10 +4,9 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import pages.DrawResultsPage;
-import pages.WithdrawalPage;
 import utils.DriverFactory;
 
-public class DrawResultsStepDefinitions {
+public class DrawResultsSteps {
     private DrawResultsPage drawResultsPage;
 
     private DrawResultsPage drawResultsPage() {

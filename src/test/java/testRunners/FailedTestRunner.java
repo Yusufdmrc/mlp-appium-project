@@ -10,7 +10,7 @@ import io.cucumber.testng.CucumberOptions;
                 "summary",
                 "pretty",
                 "html:Reports/CucumberReport/FailedReports.html",
-                "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"
+                "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm"
         }
 )
 public class FailedTestRunner extends AbstractTestNGCucumberTests {
